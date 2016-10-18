@@ -1,0 +1,25 @@
+file gVacController.template
+{
+   pattern {SCANRATE }
+           {"Passive"}
+}
+
+file gVacCh.template
+{
+   pattern {CHAN,       DESC,           ALIAS,   SCANRATE,    FLNK }
+           {   1, "8902 WG2", "ESB:VACP:8902", "5 second", "CH2:I" }
+           {   2,    "Spare",              "",  "Passive", "MODEL" }
+}
+
+file gVacSetpoint.template
+{ 
+   pattern {CHAN, SP, PSTATNUM , PSTATOKSV , PSTATFLTSV , INACTSV  , SUP1SV   , SUP2SV   , SCANRATE  , FLNK                        }  
+           {   1,  1,         1, NO_ALARM  , MAJOR      , MAJOR    , NO_ALARM , MAJOR    , "Passive" , "1:PSTAT2MON"    } 
+           {   1,  2,         2, NO_ALARM  , NO_ALARM   , NO_ALARM , MAJOR    , MAJOR    , "Passive" , "2:PSTAT1MON"    } 
+           {   2,  3,         1, NO_ALARM  , MAJOR      , MAJOR    , MAJOR    , NO_ALARM , "Passive" , "2:PSTAT2MON"    }
+           {   2,  4,         2, NO_ALARM  , NO_ALARM   , NO_ALARM , MAJOR    , MAJOR    , "Passive" , ""                          }
+}
+
+
+
+

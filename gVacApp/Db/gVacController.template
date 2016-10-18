@@ -1,0 +1,182 @@
+#--- Controller ------------------------------------
+record(stringin, "$(P):IOC") {
+  field(DESC, "$(LOC)")
+  field(VAL,  "$(IOC)")
+  field(PINI, "1")
+}
+
+record(stringin, "$(P):MODEL") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getModel $(PORT)")
+  field(FLNK, "$(P):FWVERSION")
+}
+
+record(ai, "$(P):LINEV") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getLinevoltage $(PORT)")
+  field(EGU, "V")
+  field(FLNK, "$(P):LINEFREQ")
+}
+
+record(ai, "$(P):LINEFREQ") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getLinefrequency $(PORT)")
+  field(EGU, "HZ")
+  field(FLNK, "$(P):TOD")
+}
+
+record(sub, "$(P):STREAMRELOAD") {
+  field(SNAM, "streamReload")
+}
+
+record(stringin, "$(P):TOD") {
+  field(DTYP, "stream")
+  field(FLNK, "$(P):TODDY")
+  field(INP, "@$(PROTOFILE) getDatetime($(P)) $(PORT)")
+}
+
+record(bo, "$(P):TODLOAD") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setDatetime($(P)) $(PORT)")
+  field(FLNK, "$(P):TOD")
+#  field(ASG, "VACWRITE")
+}
+
+record(mbbo, "$(P):TODDYDES") {
+  field(ZRST, "SUNDAY")
+  field(ZRVL, "1")
+  field(ONST, "MONDAY")
+  field(ONVL, "2")
+  field(TWST, "TUESDAY")
+  field(TWVL, "3")
+  field(THST, "WEDNESDAY")
+  field(THVL, "4")
+  field(FRST, "THURSDAY")
+  field(FRVL, "5")
+  field(FVST, "FRIDAY")
+  field(FVVL, "6")
+  field(SXST, "SATURDAY")
+  field(SXVL, "7")
+}
+
+record(ao, "$(P):TODMIDES") {
+  field(PREC, "0")
+  field(DRVH, "59")
+  field(DRVL, "0")
+}
+
+record(ao, "$(P):TODHRDES") {
+  field(PREC, "0")
+  field(DRVH, "23")
+  field(DRVL, "0")
+}
+
+record(ao, "$(P):TODMODES") {
+  field(PREC, "0")
+  field(DRVH, "12")
+  field(DRVL, "1")
+}
+
+record(ao, "$(P):TODDTDES") {
+  field(PREC, "0")
+  field(DRVH, "31")
+  field(DRVL, "1")
+}
+
+record(ao, "$(P):TODYRDES") {
+  field(PREC, "0")
+  field(DRVH, "99")
+  field(DRVL, "00")
+}
+
+record(mbbi, "$(P):TODDY") {
+  field(ZRST, "NONE")
+  field(ONST, "SUNDAY")
+  field(TWST, "MONDAY")
+  field(THST, "TUESDAY")
+  field(FRST, "WEDNESDAY")
+  field(FVST, "THURSDAY")
+  field(SXST, "FRIDAY")
+  field(SVST, "SATURDAY")
+  field(FLNK, "$(P):ASHVE")
+}
+
+record(stringin, "$(P):FWVERSION") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getFirmware $(PORT)")
+  field(FLNK, "$(P):LINEV")
+}
+
+record(bo, "$(P):ASHVEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setAutostartHVE $(PORT)")
+  field(FLNK, "$(P):ASHVE")
+  field(ZNAM, "DISABLE")
+  field(ONAM, "ENABLE")
+#  field(ASG, "VACWRITE")
+}
+
+record(bi, "$(P):ASHVE") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getAutostartHVE $(PORT)")
+  field(ZNAM, "DISABLED")
+  field(ONAM, "ENABLED")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(FLNK, "$(P):ASPOWER")
+}
+
+record(bo, "$(P):ASPOWERDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setAutostartPower $(PORT)")
+  field(FLNK, "$(P):ASPOWER")
+  field(ZNAM, "DISABLE")
+  field(ONAM, "ENABLE")
+#  field(ASG, "VACWRITE")
+}
+
+record(bi, "$(P):ASPOWER") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getAutostartPower $(PORT)")
+  field(ZNAM, "DISABLED")
+  field(ONAM, "ENABLED")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(FLNK, "$(P):FAN")
+}
+
+record(bo, "$(P):KEYLOCKDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setKeypadlock $(PORT)")
+#  field(ASG, "VACWRITE")
+}
+
+record(mbbo, "$(P):PEGUDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setPressunits $(PORT)")
+  field(ZRST, "TORR")
+  field(ONST, "MBR")
+  field(TWST, "PA")
+#  field(ASG, "VACWRITE")
+}
+
+record(bo, "$(P):MASTERRESET") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) masterReset $(PORT)")
+  field(ONAM, "RESET")
+#  field(ASG, "VACWRITE")
+  field(HIGH, "1")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+}
+
+record(bi, "$(P):FAN") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getFan $(PORT)")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  field(ZSV, "MINOR")
+  field(OSV, "NO_ALARM")
+  field(FLNK, "$(P):CH1:PSTAT1MON")
+}
+

@@ -1,0 +1,251 @@
+#--- Chan.$(CHAN) ---------------------------------------------
+record(waveform, "$(P):CH$(CHAN)") {
+  field(DESC, "$(DESC)")
+  field(PINI, "1")
+  field(FTVL, "STRING")
+  field(NELM, "100")
+}
+
+record(ai, "$(P):CH$(CHAN):VMON") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getVoltage($(CHAN)) $(PORT)")
+  field(EGU, "Volts")
+  field(FLNK, "$(P):CH$(CHAN):STATUSRAW")
+}
+
+record(ao, "$(P):CH$(CHAN):PUMPSIZEDES") {
+  field(DTYP, "stream")
+  field(FLNK, "$(P):CH$(CHAN):PUMPSIZE")
+  field(OUT, "@$(PROTOFILE) setPumpsize($(CHAN)) $(PORT)")
+  field(DRVH, "1200")
+  field(DRVL, "10")
+#  field(ASG, "VACWRITE")
+}
+
+record(ai, "$(P):CH$(CHAN):PUMPSIZE") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getPumpsize($(CHAN)) $(PORT)")
+  field(FLNK, "$(P):CH$(CHAN):SUPPLYSIZE")
+}
+
+record(ao, "$(P):CH$(CHAN):CALFACTORDES") {
+  field(DTYP, "stream")
+  field(FLNK, "$(P):CH$(CHAN):CALFACTOR")
+  field(OUT, "@$(PROTOFILE) setCalibfactor($(CHAN)) $(PORT)")
+  field(DRVH, "0")
+  field(DRVL, "9.99")
+  field(PREC, "2")
+#  field(ASG, "VACWRITE")
+}
+
+record(ai, "$(P):CH$(CHAN):CALFACTOR") {
+  field(SCAN, "5 second")
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getCalibfactor($(CHAN)) $(PORT)")
+  field(PREC, "2")
+}
+
+record(bi, "$(P):CH$(CHAN):SUPPLYSIZE") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getSupplysize($(CHAN)) $(PORT)")
+  field(ZNAM, "MEDIUM")
+  field(ONAM, "LARGE")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(FLNK, "$(P):CH$(CHAN):AOMODE")
+}
+
+record(ai, "$(P):CH$(CHAN):VDESRBCK") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getHVStrapping($(CHAN)) $(PORT)")
+  field(EGU, "V")
+  field(FLNK, "$(P):CH$(CHAN):STATEMON")
+}
+
+record(mbbo, "$(P):CH$(CHAN):AOMODEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setAnalogoutmode($(CHAN)) $(PORT)")
+  field(ZRST, "LOG_P")
+  field(ONST, "LOG_I")
+  field(TWST, "V_PER_1_UA")
+  field(THST, "V_PER_10_UA")
+  field(FRST, "V_PER_100_UA")
+  field(FVST, "V_PER_1_MA")
+  field(SXST, "V_PER_10_MA")
+  field(SVST, "V_PER_50_MA")
+  field(FLNK, "$(P):CH$(CHAN):AOMODE")
+#  field(ASG, "VACWRITE")
+}
+
+record(mbbi, "$(P):CH$(CHAN):AOMODE") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getAnalogoutmode($(CHAN)) $(PORT)")
+  field(ZRST, "LOG_P")
+  field(ONST, "LOG_I")
+  field(TWST, "V_PER_1_UA")
+  field(THST, "V_PER_10_UA")
+  field(FRST, "V_PER_100_UA")
+  field(FVST, "V_PER_1_MA")
+  field(SXST, "V_PER_10_MA")
+  field(SVST, "V_PER_50_MA")
+  field(ZRSV, "NO_ALARM")
+  field(ONSV, "MAJOR")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MAJOR")
+  field(FLNK, "$(P):CH$(CHAN):VDESRBCK")
+  field(EIST, "LOG_P")
+  field(NIST, "LOG_I")
+  field(TEST, "V_PER_1_UA")
+  field(ELST, "V_PER_10_UA")
+  field(TVST, "V_PER_100_UA")
+  field(TTST, "V_PER_1_MA")
+  field(FTST, "V_PER_10_MA")
+  field(FFST, "V_PER_50_MA")
+  field(EISV, "NO_ALARM")
+  field(NISV, "MAJOR")
+  field(TESV, "MAJOR")
+  field(ELSV, "MAJOR")
+  field(TVSV, "MAJOR")
+  field(TTSV, "MAJOR")
+  field(FTSV, "MAJOR")
+  field(FFSV, "MAJOR")
+}
+
+record(sub, "$(P):CH$(CHAN):STREAMRELOAD") {
+  field(SNAM, "streamReload")
+}
+
+record(mbbi, "$(P):CH$(CHAN):STATUSRAW") {
+  field(DTYP, "stream")
+  field(INP, "@$(PROTOFILE) getStatus($(CHAN)) $(PORT)")
+  field(FLNK, "$(P):CH$(CHAN):STATUSCALC PP")
+}
+
+record(calc, "$(P):CH$(CHAN):STATUSCALC") {
+  field(CALC, "A==77?7:A==78?8:FLOOR(A/11)")
+  field(INPA, "$(P):CH$(CHAN):STATUSRAW NPP MS")
+  field(FLNK, "$(P):CH$(CHAN):STATUS PP")
+}
+
+record(mbbi, "$(P):CH$(CHAN):STATUSCODE") {
+  field(INP, "$(P):CH$(CHAN):STATUSCODECL NPP MS")
+  field(ZRST, "NO_ERROR")
+  field(ONST, "TOO_MANY_COOLDN")
+  field(TWST, "RUN_P_HIGH")
+  field(THST, "RUN_I_HIGH")
+  field(FRST, "START_P_HIGH")
+  field(FVST, "COOL_PUMP_PWR")
+  field(SXST, "COOL_SPLY_I")
+  field(SVST, "COOL_SHORT_CIRC")
+  field(EIST, "COOL_SPLY_MLFN")
+  field(NIST, "COOL_V_LOW")
+  field(TEST, "COOL_ARC_DETCT")
+  field(ZRSV, "NO_ALARM")
+  field(ONSV, "MAJOR")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MAJOR")
+  field(EISV, "MAJOR")
+  field(NISV, "MAJOR")
+  field(TESV, "MAJOR")
+  field(FLNK, "$(P):CH$(CHAN):PUMPSIZE")
+}
+
+record(mbbi, "$(P):CH$(CHAN):STATUS") {
+  field(FLNK, "$(P):CH$(CHAN):STATUSCODECL PP")
+  field(INP, "$(P):CH$(CHAN):STATUSCALC NPP MS")
+  field(ZRST, "SAFECONN")
+  field(ONST, "RUNNING")
+  field(TWST, "COOLDOWN")
+  field(THST, "PUMP_ERROR")
+  field(FRST, "INTERLOCK")
+  field(FVST, "SHUT_DOWN")
+  field(SXST, "CALIBRATION")
+  field(SVST, "WAIT_TO_START")
+  field(EIST, "STANDBY")
+  field(ZRSV, "MAJOR")
+  field(ONSV, "NO_ALARM")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MINOR")
+  field(EISV, "MAJOR")
+}
+
+record(bo, "$(P):CH$(CHAN):STATEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setOnoff($(CHAN)) $(PORT)")
+#  field(ASG, "VACWRITE")
+}
+
+record(calc, "$(P):CH$(CHAN):STATUSCODECL") {
+  field(INPA, "$(P):CH$(CHAN):STATUSRAW NPP MS")
+  field(CALC, "A>=77?0: A%11")
+  field(FLNK, "$(P):CH$(CHAN):STATUSCODE PP")
+}
+
+record(mbbo, "$(P):CH$(CHAN):DISPDES") {
+  field(DTYP, "stream")
+  field(OUT, "@$(PROTOFILE) setDisplaymode($(CHAN)) $(PORT)")
+  field(ZRST, "VOLTAGE")
+  field(ONST, "CURRENT")
+  field(TWST, "PRESSURE")
+#  field(ASG, "VACWRITE")
+}
+
+record(ai, "$(P):CH$(CHAN):PMON") {
+  field(DTYP, "stream")
+  alias("$(ALIAS):PRESSURE")
+  field(INP, "@$(PROTOFILE) getPressure($(CHAN)) $(PORT)")
+  field(FLNK, "$(P):CH$(CHAN):PMONLOG")
+}
+
+record(calc, "$(P):CH$(CHAN):PMONLOG") {
+  field(CALC, "LOG(A)")
+  field(HOPR, "-2")
+  field(LOPR, "-11")
+  field(INPA, "$(P):CH$(CHAN):PMON")
+  field(FLNK, "$(P):CH$(CHAN):VMON")
+}
+
+record(stringin, "$(P):CH$(CHAN):VPCNAME") {
+  field(PINI, "YES")
+  field(VAL, "$(P)")
+}
+
+record(ai, "$(P):CH$(CHAN):I") {
+  field(DTYP, "stream")
+  alias("$(ALIAS):CURRENT")
+  field(INP, "@$(PROTOFILE) getCurrent($(CHAN)) $(PORT)")
+  field(HIHI, "1E-4")
+  field(HIGH, "1E-5")
+  field(LOW,  "1E-12")
+  field(LOLO, "1E-13")
+  field(HHSV, "MAJOR")
+  field(HSV,  "MINOR")
+  field(LSV,  "NO_ALARM")
+  field(LLSV, "NO_ALARM")
+  field(SCAN, "$(SCANRATE)")
+  field(FLNK, "$(P):CH$(CHAN):PMON")
+}
+
+
+record(bi, "$(P):CH$(CHAN):STATEMON") {
+  field(DTYP, "stream")
+  field(FLNK, "$(P):$(FLNK)")
+  field(INP, "@$(PROTOFILE) getState($(CHAN)) $(PORT)")
+  field(OSV, "NO_ALARM")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  field(ZSV, "MAJOR")
+}
+
